@@ -1,0 +1,194 @@
+openapi: 3.0.0
+info:
+  title: Formula 1 API
+  version: 1.0.0
+servers:
+  - url: http://backend.vm1.test
+    description: VM1 backend
+  - url: http://backend.vm2.test
+    description: VM2 backend
+paths:
+  /api/teams:
+    get:
+      summary: Csapatok listázása
+      description: |
+        Listázza ki az összes Forma 1-es csapatot.
+
+        Az `orderBy` query paraméter határozza meg, hogy mi alapján történjen a rendezés.
+        Értékei lehetnek: `name`, `founded`.
+        
+        Az `order` a rendezési irányt határozza meg: `asc` (növekvő) vagy `desc` (csökkenő).
+      operationId: teams.index
+      tags:
+        - Team
+      parameters:
+        - name: orderBy
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [name, founded]
+          description: Rendezés alapja
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Rendezés iránya
+      responses:
+        '200':
+          description: Csapatok listázása sikeres
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Team'
+    post:
+      summary: Új csapat hozzáadása
+      operationId: teams.create
+      tags:
+        - Team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+      responses:
+        '201':
+          description: Csapat sikeresen hozzáadva
+        '400':
+          description: Hibás adatok
+  /api/teams/{team}:
+    get:
+      summary: Csapat megtekintése ID alapján
+      operationId: teams.show
+      tags:
+        - Team
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Egy csapat adatai
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '404':
+          description: Csapat nem található
+    put:
+      summary: Csapat adatainak frissítése
+      operationId: teams.update
+      tags:
+        - Team
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+      responses:
+        '200':
+          description: Csapat sikeresen frissítve
+        '404':
+          description: Csapat nem található
+    delete:
+      summary: Csapat törlése
+      operationId: teams.destroy
+      tags:
+        - Team
+      parameters:
+        - name: team
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Sikeres törlés
+        '404':
+          description: Csapat nem található
+
+  /api/drivers:
+    get:
+      summary: Versenyzők listázása
+      operationId: drivers.index
+      tags:
+        - Driver
+      parameters:
+        - name: team_id
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Csapathoz tartozó versenyzők szűrése
+      responses:
+        '200':
+          description: Versenyzők sikeres listázása
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Driver'
+
+components:
+  schemas:
+    Team:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Csapat azonosítója
+        name:
+          type: string
+          maxLength: 50
+          description: Csapat neve
+        country:
+          type: string
+          maxLength: 50
+          description: Származási ország
+        founded:
+          type: string
+          format: date
+          description: Alapítás éve
+        team_principal:
+          type: string
+          maxLength: 50
+          description: Csapatvezető neve
+    Driver:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Versenyző azonosítója
+        name:
+          type: string
+          maxLength: 50
+          description: Versenyző neve
+        nationality:
+          type: string
+          maxLength: 50
+          description: Versenyző nemzetisége
+        dob:
+          type: string
+          format: date
+          description: Születési dátum
+        team_id:
+          type: integer
+          description: A csapat ID-je, amelyhez a versenyző tartozik
