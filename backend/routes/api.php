@@ -20,5 +20,3 @@ Route::delete('/drivers/{driver}', [DriverController::class, 'destroy']);
 
 // Speciális szűrés versenyzők listázására csapat ID alapján
 Route::get('/drivers', [DriverController::class, 'index']);
-
-

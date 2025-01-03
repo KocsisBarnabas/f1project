@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
-            $table->string('nationality', 50);
+            $table->string('name', 100);
+            $table->string('nationality', 100);
             $table->date('dob');
             $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->softDeletes();

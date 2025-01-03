@@ -123,10 +123,10 @@ paths:
           description: Sikeres törlés
         '404':
           description: Csapat nem található
-
   /api/drivers:
     get:
       summary: Versenyzők listázása
+      description: Listázza az összes versenyzőt, opcionális szűréssel csapat alapján.
       operationId: drivers.index
       tags:
         - Driver
@@ -146,7 +146,61 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Driver'
-
+    post:
+      summary: Új versenyző hozzáadása
+      operationId: drivers.create
+      tags:
+        - Driver
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Driver'
+      responses:
+        '201':
+          description: Versenyző sikeresen hozzáadva
+        '400':
+          description: Hibás adatok
+  /api/drivers/{driver}:
+    get:
+      summary: Versenyző adatainak lekérdezése
+      operationId: drivers.show
+      tags:
+        - Driver
+      parameters:
+        - name: driver
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Versenyző ID
+      responses:
+        '200':
+          description: Versenyző adatai
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '404':
+          description: Versenyző nem található
+    delete:
+      summary: Versenyző törlése
+      operationId: drivers.destroy
+      tags:
+        - Driver
+      parameters:
+        - name: driver
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Versenyző ID
+      responses:
+        '204':
+          description: Sikeres törlés
+        '404':
+          description: Versenyző nem található
 components:
   schemas:
     Team:

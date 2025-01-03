@@ -21,7 +21,7 @@ class DriverFactory extends Factory
             'name' => $this->faker->name,
             'nationality' => substr($this->faker->country, 0, 50),
             'dob' => $this->faker->date,
-            'team_id' => Team::factory(),
-        ];        
+            'team_id' => Team::inRandomOrder()->first()->id, 
+        ];               
     }
 }
